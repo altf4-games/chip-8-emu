@@ -482,39 +482,24 @@
 
         // Test ROM - Simple pattern display
         function loadTestROM() {
-            const testROM = new Uint8Array([
-                0xA2, 0x2A, // Set I to 0x22A
-                0x60, 0x0C, // Set V0 to 12
-                0x61, 0x08, // Set V1 to 8
-                0xD0, 0x1F, // Draw sprite at V0, V1
-                0x70, 0x09, // Add 9 to V0
-                0xA2, 0x39, // Set I to 0x239
-                0xD0, 0x1F, // Draw sprite at V0, V1
-                0xA2, 0x48, // Set I to 0x248
-                0x70, 0x08, // Add 8 to V0
-                0xD0, 0x1F, // Draw sprite at V0, V1
-                0x70, 0x04, // Add 4 to V0
-                0xA2, 0x57, // Set I to 0x257
-                0xD0, 0x1F, // Draw sprite at V0, V1
-                0x70, 0x08, // Add 8 to V0
-                0xA2, 0x66, // Set I to 0x266
-                0xD0, 0x1F, // Draw sprite at V0, V1
-                0x70, 0x08, // Add 8 to V0
-                0xA2, 0x75, // Set I to 0x275
-                0xD0, 0x1F, // Draw sprite at V0, V1
-                0x12, 0x28, // Jump to 0x228 (infinite loop)
-
-                // Sprite data
-                0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, // H
-                0xE0, 0x20, 0x20, 0x20, 0xE0, 0x00, 0x00, 0x00, // E
-                0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, // L
-                0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, // L
-                0xE0, 0x80, 0xE0, 0x20, 0xE0, 0x00, 0x00, 0x00, // O (simplified)
-                0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00  // !
-            ]);
-            chip8.loadROM(testROM);
-            status.textContent = 'Loaded test ROM - displays "HELLO"';
+            fetch('roms/test_opcode.ch8')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load test ROM');
+                    }
+                    return response.arrayBuffer();
+                })
+                .then(data => {
+                    const rom = new Uint8Array(data);
+                    chip8.loadROM(rom);
+                    status.textContent = 'Loaded test ROM - test_opcode.ch8';
+                })
+                .catch(error => {
+                    console.error('Error loading ROM:', error);
+                    status.textContent = 'Error loading test ROM';
+                });
         }
+
 
         function reset() {
             chip8.reset();
